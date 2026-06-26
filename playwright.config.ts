@@ -10,7 +10,6 @@ export default defineConfig({
   reporter: 'html',
   use: {
     trace: 'on-first-retry',
-    headless: false,
     // SauceDemo uses data-test="..." not data-testid="..."
     testIdAttribute: 'data-test',
   },
