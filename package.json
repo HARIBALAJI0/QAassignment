@@ -1,0 +1,16 @@
+{
+  "name": "my-qa-assignment",
+  "version": "1.0.0",
+  "description": "QA Take-Home Assignment — Playwright + TypeScript",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test tests/ui",
+    "test:api": "npx playwright test tests/api",
+    "test:report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.19.43",
+    "typescript": "^5.0.0"
+  }
+}
