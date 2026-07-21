@@ -6,11 +6,14 @@
     "test": "npx playwright test",
     "test:ui": "npx playwright test tests/ui",
     "test:api": "npx playwright test tests/api",
-    "test:report": "npx playwright show-report"
+    "test:report": "npx playwright show-report",
+    "test:allure": "allure generate allure-results --clean -o allure-report && allure open allure-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
     "@types/node": "^20.19.43",
+    "allure-commandline": "^2.33.0",
+    "allure-playwright": "^3.10.2",
     "typescript": "^5.0.0"
   }
 }
