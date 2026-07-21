@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { config } from '../utils/config';
 
 export class LoginPage extends BasePage {
   readonly usernameInput: Locator;
@@ -16,7 +17,7 @@ export class LoginPage extends BasePage {
   }
 
   async goto() {
-    await this.navigate('https://www.saucedemo.com');
+    await this.navigate(config.saucedemoBaseUrl);
   }
 
   async login(username: string, password: string) {

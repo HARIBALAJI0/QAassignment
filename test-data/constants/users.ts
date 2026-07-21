@@ -1,10 +1,12 @@
+import { config } from '../../utils/config';
+
 export const testUsers = {
   standard_user: {
-    username: 'standard_user',
-    password: 'secret_sauce',
+    username: config.standardUserUsername,
+    password: config.standardUserPassword,
   },
   locked_out_user: {
-    username: 'locked_out_user',
-    password: 'secret_sauce',
+    username: config.lockedOutUserUsername,
+    password: config.lockedOutUserPassword,
   },
 };

@@ -1,12 +1,10 @@
-import process from 'process';
+import { config } from '../config';
 
-export const REQRES_BASE_URL = 'https://reqres.in';
+export const REQRES_BASE_URL = config.reqresBaseUrl;
 
 export function getReqResHeaders() {
-  const apiKey = process.env.REQRES_API_KEY ?? 'free_user_3FfrhuCdoIOuAZa2CEnGyxgRUHK';
-
   return {
     'Content-Type': 'application/json',
-    'x-api-key': apiKey,
+    'x-api-key': config.reqresApiKey,
   };
 }

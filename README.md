@@ -30,17 +30,27 @@ npx playwright install chromium
 
 ---
 
-## Setup — ReqRes API key (optional)
+## Configuration via .env
 
-ReqRes uses an API key for requests. If you do not set one, the suite falls back to the public demo key so local execution can continue.
+The suite now reads its URLs and credentials from environment variables. Create a .env file in the project root using the example below.
 
 ```bash
-# Windows
-set REQRES_API_KEY=your_key_here
-
-# Mac / Linux
-export REQRES_API_KEY=your_key_here
+copy .env.example .env
 ```
+
+Example values:
+
+```env
+SAUCEDEMO_BASE_URL=https://www.saucedemo.com
+STANDARD_USER=standard_user
+STANDARD_PASSWORD=secret_sauce
+LOCKED_OUT_USER=locked_out_user
+LOCKED_OUT_PASSWORD=secret_sauce
+REQRES_BASE_URL=https://reqres.in
+REQRES_API_KEY=your_key_here
+```
+
+If you do not set REQRES_API_KEY, the suite falls back to the public demo key so local execution can continue.
 
 ---
 
