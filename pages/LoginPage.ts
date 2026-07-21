@@ -1,14 +1,14 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class LoginPage {
-  readonly page: Page;
+export class LoginPage extends BasePage {
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
   readonly errorMessage: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.usernameInput = page.getByTestId('username');
     this.passwordInput = page.getByTestId('password');
     this.loginButton = page.getByTestId('login-button');
@@ -16,7 +16,7 @@ export class LoginPage {
   }
 
   async goto() {
-    await this.page.goto('https://www.saucedemo.com');
+    await this.navigate('https://www.saucedemo.com');
   }
 
   async login(username: string, password: string) {

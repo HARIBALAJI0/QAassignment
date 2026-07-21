@@ -1,6 +1,16 @@
 # QA Take-Home Assignment — Playwright + TypeScript
 
-A focused test suite covering UI automation on [SauceDemo](https://www.saucedemo.com) and API automation against [ReqRes](https://reqres.in), built with Playwright and TypeScript.
+A structured Playwright suite covering UI automation on [SauceDemo](https://www.saucedemo.com) and API automation against [ReqRes](https://reqres.in), built with TypeScript and modern test practices.
+
+---
+
+## Highlights
+
+- Reusable base page for common UI actions
+- Shared Playwright fixtures for login and authenticated flows
+- Centralized test data under test-data/
+- GitHub Actions workflow for CI
+- HTML + Allure reporting support
 
 ---
 
@@ -20,9 +30,9 @@ npx playwright install chromium
 
 ---
 
-## Setup — ReqRes API key (required)
+## Setup — ReqRes API key (optional)
 
-ReqRes now requires an API key on every request. Get a free key at **https://reqres.in/signup**, then set it before running API tests:
+ReqRes uses an API key for requests. If you do not set one, the suite falls back to the public demo key so local execution can continue.
 
 ```bash
 # Windows
@@ -32,36 +42,46 @@ set REQRES_API_KEY=your_key_here
 export REQRES_API_KEY=your_key_here
 ```
 
-The API tests throw a clear error if the variable is missing.
-
 ---
 
 ## Running the tests
 
 | Command | What it does |
 |---|---|
-| `npm test` | Run the entire suite (UI + API) |
-| `npm run test:ui` | Run only the UI tests |
-| `npm run test:api` | Run only the API tests |
-| `npm run test:report` | Open the HTML report after a run |
+| `npm test` | Run the full suite |
+| `npm run test:ui` | Run only UI tests |
+| `npm run test:api` | Run only API tests |
+| `npm run test:report` | Open the HTML report |
+| `npm run test:allure` | Generate and open the Allure report |
 
 ---
 
 ## Project structure
 
-```
+```text
 my-qa-assignment/
+├── .github/workflows/playwright.yml
+├── pages/
+│   ├── BasePage.ts
+│   ├── LoginPage.ts
+│   ├── ProductsPage.ts
+│   └── CheckoutPage.ts
+├── test-data/
+│   └── constants/
+│       └── users.ts
 ├── tests/
 │   ├── ui/
-│   │   ├── login.spec.ts       # Login: standard user, locked-out user
-│   │   ├── cart.spec.ts        # Cart badge, price sort
-│   │   └── checkout.spec.ts    # Full checkout flow
+│   │   ├── login.spec.ts
+│   │   ├── cart.spec.ts
+│   │   └── checkout.spec.ts
 │   └── api/
-│       └── users.spec.ts       # GET /api/users, POST /api/users, bonus chain
-├── pages/
-│   ├── LoginPage.ts            # POM — saucedemo login
-│   ├── ProductsPage.ts         # POM — product listing & cart
-│   └── CheckoutPage.ts         # POM — cart → checkout → confirmation
+│       └── users.spec.ts
+├── utils/
+│   ├── api/
+│   │   └── reqres.ts
+│   └── helpers/
+│       └── slug.ts
+├── fixtures.ts
 ├── playwright.config.ts
 ├── package.json
 └── README.md
@@ -69,42 +89,16 @@ my-qa-assignment/
 
 ---
 
-## What each part covers
+## Test coverage
 
-### Part 1 — UI (SauceDemo)
+### UI (SauceDemo)
 
-| File | Scenarios |
-|---|---|
-| `login.spec.ts` | `standard_user` lands on Products page; `locked_out_user` sees error and stays on login |
-| `cart.spec.ts` | Adding two products updates the cart badge to 2; Price (low to high) sort puts cheapest item first |
-| `checkout.spec.ts` | Full flow — add 2 items → cart → checkout info → finish → "Thank you for your order!" |
+- Login happy path and locked-out-user validation
+- Cart badge and sorting assertions
+- Full checkout confirmation flow
 
-All UI tests use `data-test` attributes via `getByTestId()` and Playwright semantic locators. Each test is independent and can run in any order.
+### API (ReqRes)
 
-### Part 2 — API (ReqRes)
-
-| Test | Assertion |
-|---|---|
-| `GET /api/users?page=2` | Status 200, `data` is a non-empty array, each user has `id`, `email`, `first_name`, `last_name` |
-| `POST /api/users` | Status 201, response echoes `name` and `job`, contains `id` and a valid `createdAt` ISO timestamp |
-| Bonus chain | Demonstrates the create-then-verify pattern; comments show what a real follow-up GET would look like |
-
-API tests use Playwright's `request` fixture — no browser involved.
-
----
-
-## Design decisions & trade-offs
-
-- **Page Object Model** used for all UI tests. Each page class encapsulates only its own locators and actions, keeping specs readable and DRY.
-- **`data-test` attributes** preferred throughout (SauceDemo exposes them). CSS class selectors are only used where a `data-test` equivalent doesn't exist (e.g. `.shopping_cart_badge`, `.inventory_item_price`).
-- **One behaviour per test** — each `test()` block asserts exactly one outcome, making failures easy to diagnose.
-- **Parallel execution** is enabled by default via `fullyParallel: true`. Because every test sets up its own session (login via `beforeEach`), there is no shared state.
-- **Chromium only** — cross-browser wasn't required by the brief; adding Firefox/WebKit is a one-line change in `playwright.config.ts`.
-
-## What I'd add with more time
-
-- A `fixtures.ts` file to abstract the login `beforeEach` as a reusable fixture, reducing boilerplate further.
-- A `.env` / config file for credentials and base URLs instead of inline strings.
-- CI via GitHub Actions (`npx playwright test` on push).
-- `problem_user` tests to document known visual/functional defects on SauceDemo.
-- Negative API tests — invalid payloads, missing fields, unexpected status codes.
+- GET /api/users?page=2 validation
+- POST /api/users creation flow
+- Structure checks for API response payloads

@@ -1,20 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { getReqResHeaders, REQRES_BASE_URL } from '../../utils/api/reqres';
 
 declare const process: { env: { [key: string]: string | undefined } };
-
-const BASE_URL = 'https://reqres.in';
-
-/**
- * ReqRes now requires an API key on every request.
- * If REQRES_API_KEY is not provided, we fall back to the shared demo key so the suite can run locally.
- */
-const API_KEY = process.env.REQRES_API_KEY ?? 'free_user_3FfrhuCdoIOuAZa2CEnGyxgRUHK';
-
-// Shared headers for all ReqRes requests
-const reqresHeaders = {
-  'Content-Type': 'application/json',
-  'x-api-key': API_KEY,
-};
 
 test.beforeAll(() => {
   if (!process.env.REQRES_API_KEY) {
@@ -24,8 +11,8 @@ test.beforeAll(() => {
 
 test.describe('ReqRes API — Users', () => {
   test('GET /api/users?page=2 returns 200 with a valid data array', async ({ request }) => {
-    const response = await request.get(`${BASE_URL}/api/users?page=2`, {
-      headers: reqresHeaders,
+    const response = await request.get(`${REQRES_BASE_URL}/api/users?page=2`, {
+      headers: getReqResHeaders(),
     });
 
     expect(response.status()).toBe(200);
@@ -51,9 +38,9 @@ test.describe('ReqRes API — Users', () => {
   }) => {
     const payload = { name: 'morpheus', job: 'leader' };
 
-    const response = await request.post(`${BASE_URL}/api/users`, {
+    const response = await request.post(`${REQRES_BASE_URL}/api/users`, {
       data: payload,
-      headers: reqresHeaders,
+      headers: getReqResHeaders(),
     });
 
     expect(response.status()).toBe(201);
@@ -76,9 +63,9 @@ test.describe('ReqRes API — Users', () => {
     request,
   }) => {
     // Step 1: Create a new user
-    const createResponse = await request.post(`${BASE_URL}/api/users`, {
+    const createResponse = await request.post(`${REQRES_BASE_URL}/api/users`, {
       data: { name: 'trinity', job: 'operator' },
-      headers: reqresHeaders,
+      headers: getReqResHeaders(),
     });
     expect(createResponse.status()).toBe(201);
 

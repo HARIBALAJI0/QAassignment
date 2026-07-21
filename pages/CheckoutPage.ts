@@ -1,7 +1,7 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class CheckoutPage {
-  readonly page: Page;
+export class CheckoutPage extends BasePage {
   readonly checkoutButton: Locator;
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
@@ -11,7 +11,7 @@ export class CheckoutPage {
   readonly confirmationHeader: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.checkoutButton = page.getByTestId('checkout');
     this.firstNameInput = page.getByTestId('firstName');
     this.lastNameInput = page.getByTestId('lastName');

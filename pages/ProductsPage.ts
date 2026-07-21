@@ -1,14 +1,15 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
+import { BasePage } from './BasePage';
+import { toSlug } from '../utils/helpers/slug';
 
-export class ProductsPage {
-  readonly page: Page;
+export class ProductsPage extends BasePage {
   readonly title: Locator;
   readonly cartBadge: Locator;
   readonly cartIcon: Locator;
   readonly sortDropdown: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.title = page.getByTestId('title');
     this.cartBadge = page.locator('.shopping_cart_badge');
     this.cartIcon = page.locator('.shopping_cart_link');
@@ -16,13 +17,10 @@ export class ProductsPage {
   }
 
   async addProductToCartByName(productName: string) {
-    // data-test IDs on add buttons follow the pattern: add-to-cart-<slug>
-    const slug = productName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    const button = this.page.getByTestId(`add-to-cart-${slug}`);
+    const button = this.page.getByTestId(`add-to-cart-${toSlug(productName)}`);
     await button.click();
   }
 
-  /** Add the first N products visible on the page */
   async addFirstNProducts(n: number) {
     const addButtons = this.page.locator('[data-test^="add-to-cart"]');
     const count = await addButtons.count();
@@ -36,7 +34,6 @@ export class ProductsPage {
     await this.sortDropdown.selectOption(option);
   }
 
-  /** Returns prices of all visible products as numbers */
   async getAllPrices(): Promise<number[]> {
     const priceLocators = this.page.locator('.inventory_item_price');
     const texts = await priceLocators.allTextContents();
